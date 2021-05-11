@@ -25,8 +25,8 @@ public class ServerBrick {
 				
 		 DataInputStream dataIn = new DataInputStream(s.getInputStream());	
 		 DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());		
-				EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(brick.getPort("B"));
-				EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(brick.getPort("C"));
+		 EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(brick.getPort("B"));
+		 EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(brick.getPort("D"));
 			
 		)
 		{
@@ -71,7 +71,7 @@ public class ServerBrick {
 				
 			System.out.println("Shutting program down");
 		}
-		catch (IOException e) {
+		catch ( Exception e) {
 			System.out.println(e.getMessage());
 		}
 
