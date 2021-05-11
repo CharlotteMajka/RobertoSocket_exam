@@ -20,11 +20,13 @@ public class ServerBrick {
 		System.out.println("Waiting for client");
 		Brick brick = BrickFinder.getDefault();
 		try 
-		(ServerSocket ss = new ServerSocket(5000);
+		(/*ServerSocket ss = new ServerSocket(5000);
 		 Socket s = ss.accept();
 				
 		 DataInputStream dataIn = new DataInputStream(s.getInputStream());	
-		 DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());		
+		 DataOutputStream dataOut = new DataOutputStream(s.getOutputStream());
+		 */
+		 socket_singleton socket = socket_singleton.getSocketInstance();
 		 EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(brick.getPort("B"));
 		 EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(brick.getPort("D"));
 			
@@ -42,7 +44,7 @@ public class ServerBrick {
 			boolean done = false; 
 			while (!done)
 			{
-				String command = dataIn.readUTF();
+				String command = socket.dataIn.readUTF();
 				System.out.println(command);
 				
 				switch (command) {
