@@ -1,15 +1,14 @@
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.sensor.EV3UltrasonicSensor;
+import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.MovePilot;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
 
 public class ServerBrick {
 
@@ -29,47 +28,26 @@ public class ServerBrick {
 		 socket_singleton socket = socket_singleton.getSocketInstance();
 		 EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(brick.getPort("B"));
 		 EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(brick.getPort("D"));
+		 EV3UltrasonicSensor Usensor = new EV3UltrasonicSensor(brick.getPort("S2"));
 			
 		)
 		{
 			System.out.println("Client connected ");
 			
-			Wheel lWheel = WheeledChassis.modelWheel(left, WHEEL_DIAMETER).offset(TRACK_WIDTH/2);
-			Wheel rWheel = WheeledChassis.modelWheel(right, WHEEL_DIAMETER).offset(-TRACK_WIDTH/2);
+			//Wheel lWheel = WheeledChassis.modelWheel(left, WHEEL_DIAMETER).offset(TRACK_WIDTH/2);
+			//Wheel rWheel = WheeledChassis.modelWheel(right, WHEEL_DIAMETER).offset(-TRACK_WIDTH/2);
 			
-			WheeledChassis chassis = new WheeledChassis(new Wheel[] {lWheel, rWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
+			//WheeledChassis chassis = new WheeledChassis(new Wheel[] {lWheel, rWheel}, WheeledChassis.TYPE_DIFFERENTIAL);
+			//MovePilot pilot = new MovePilot(chassis);
+			RangeFinderAdapter rfa = new RangeFinderAdapter(Usensor.getDistanceMode());
+			DifferentialPilot pilot = new DifferentialPilot(WHEEL_DIAMETER, TRACK_WIDTH, left, right);
 			
-			MovePilot pilot = new MovePilot(chassis);
-			
-			boolean done = false; 
-			while (!done)
-			{
-				String command = socket.dataIn.readUTF();
-				System.out.println(command);
-				
-				switch (command) {
-				case "forward":
-					pilot.forward();
-					break;
-				case "turnleft":
-					pilot.rotate(1000, true);
-					break;
-				case "turnright":
-					pilot.rotate(-1000, true);
-					break;
-				case "backward":
-					pilot.backward();
-					break;
-				case "stop":
-					pilot.stop();
-					break;
-				case "shutdown":
-					pilot.stop();
-					done = true;
-				}
-				
-				
-				}
+			Behavior b1 = new RemoteControl(pilot, socket);
+			Behavior b3 = new EscapeButton();
+			Behavior b2 = new DetectWithSensor(pilot, rfa);
+			Behavior [] bArray = {b1, b2, b3};
+			Arbitrator arbi = new Arbitrator(bArray);
+			arbi.go();
 				
 			System.out.println("Shutting program down");
 		}

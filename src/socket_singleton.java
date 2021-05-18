@@ -31,12 +31,10 @@ public class socket_singleton implements AutoCloseable {
 		
 	 return socket_instance;
 	}
+
 	
-
-
 	@Override
 	public void close() throws Exception {
-		// TODO Auto-generated method stub
 		serverSocket.close();
 		
 	}
