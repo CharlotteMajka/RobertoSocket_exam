@@ -1,6 +1,7 @@
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.chassis.Wheel;
@@ -29,6 +30,7 @@ public class ServerBrick {
 		 EV3LargeRegulatedMotor left = new EV3LargeRegulatedMotor(brick.getPort("B"));
 		 EV3LargeRegulatedMotor right = new EV3LargeRegulatedMotor(brick.getPort("D"));
 		 EV3UltrasonicSensor Usensor = new EV3UltrasonicSensor(brick.getPort("S2"));
+		 EV3MediumRegulatedMotor headMotor = new EV3MediumRegulatedMotor(brick.getPort("A"));
 			
 		)
 		{
@@ -42,9 +44,9 @@ public class ServerBrick {
 			RangeFinderAdapter rfa = new RangeFinderAdapter(Usensor.getDistanceMode());
 			DifferentialPilot pilot = new DifferentialPilot(WHEEL_DIAMETER, TRACK_WIDTH, left, right);
 			
-			Behavior b1 = new RemoteControl(pilot, socket);
+			Behavior b1 = new RemoteControl(pilot, socket, rfa);
 			Behavior b3 = new EscapeButton();
-			Behavior b2 = new DetectWithSensor(pilot, rfa);
+			Behavior b2 = new DetectWithSensor(pilot, rfa, headMotor);
 			Behavior [] bArray = {b1, b2, b3};
 			Arbitrator arbi = new Arbitrator(bArray);
 			arbi.go();

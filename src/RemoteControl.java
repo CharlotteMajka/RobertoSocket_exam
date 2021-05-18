@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.MovePilot;
 import lejos.robotics.subsumption.Behavior;
@@ -7,13 +8,17 @@ import lejos.robotics.subsumption.Behavior;
 public class RemoteControl implements Behavior {
 	private DifferentialPilot pilot;
 	private socket_singleton socket;
+	private RangeFinderAdapter rfa;
 	
 	private boolean suppressed = false;
 	private boolean done = false;
+	private int SLOWDOWN = 25;
+	private int NEAR_SOMETHING = 50;
 	
-	public RemoteControl(DifferentialPilot _pilot, socket_singleton _socket) {
+	public RemoteControl(DifferentialPilot _pilot, socket_singleton _socket, RangeFinderAdapter _rfa) {
 		pilot = _pilot;
 		socket = _socket;
+		rfa = _rfa;
 	}
 	
 	public void doCommands() throws Exception  {	
@@ -47,6 +52,15 @@ public class RemoteControl implements Behavior {
 	
 
 }
+	public void slowDown() {
+		
+		if ( rfa.getRange() <= NEAR_SOMETHING )
+		{System.out.println("slow down");
+			pilot.setLinearSpeed(SLOWDOWN);
+			pilot.setLinearAcceleration(SLOWDOWN);
+		}
+		
+	}
 
 	@Override
 	public boolean takeControl() {
@@ -60,6 +74,7 @@ public class RemoteControl implements Behavior {
 		while(!suppressed)
 			try {
 				doCommands();
+				slowDown();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

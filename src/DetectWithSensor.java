@@ -1,4 +1,5 @@
 import lejos.hardware.Sound;
+import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -8,50 +9,92 @@ public class DetectWithSensor  implements Behavior {
 	private DifferentialPilot pilot;
 	private EV3UltrasonicSensor USensor;
 	private RangeFinderAdapter rfa;
+	private EV3MediumRegulatedMotor headMotor;
 	private boolean suppressed = false;
 	private double min = 45;
 	private double max = 315;
 	
-	public DetectWithSensor(DifferentialPilot _pilot, RangeFinderAdapter _rfa) {
+	public DetectWithSensor(DifferentialPilot _pilot, RangeFinderAdapter _rfa, EV3MediumRegulatedMotor _headmotor) {
 		pilot = _pilot;
 		rfa = _rfa;
+		headMotor = _headmotor;
 	}
 	
 	
 
 	@Override
 	public boolean takeControl() {
-		boolean takeCon = false; 
-		if(rfa.getRange() < 40  && rfa.getRange() > 20)
-			takeCon = true;
+		boolean takecon = false;
+		if(rfa.getRange() < 35)
+			takecon = true;
+			suppressed = false;
 		
-		return takeCon;
-		//return rfa.getRange() < 40;
+		return takecon;
+
 		
 	}
 
 	@Override
 	public void action() {
 		suppressed = false;
-		
+		float left;
+		float right;
 		System.out.println("vi er i detect");
 		Sound.beepSequence();
-		pilot.setLinearAcceleration(50);
-		pilot.setLinearSpeed(30);
-		pilot.setAngularAcceleration(75);
-		pilot.setAngularSpeed(50);
-		while(!suppressed) {
-		if(rfa.getRange() < 30)
-			pilot.setLinearSpeed(15);
-		else if(rfa.getRange()< 10)
-			pilot.stop();
-		else 
-			while(pilot.isMoving() && !suppressed)
-				Thread.yield();
+			//look around 
+		pilot.travel(-7);
+		headMotor.setAcceleration(100);
+		headMotor.setSpeed(100);
+		headMotor.rotate(-90);
+		/*while(pilot.isMoving() && !suppressed)
+		{   
+		    Thread.yield();
+
+		}*/
+		left = rfa.getRange();
+		headMotor.rotate(180);
+		/*while(pilot.isMoving() && !suppressed)
+		{   
+		    Thread.yield();
+		}*/
+		right = rfa.getRange();
+		headMotor.rotate(-90);
+		/*while(pilot.isMoving() && !suppressed)
+			Thread.yield();*/
+		if (left < 50 && right < 50 )
+		{headMotor.rotate(180);
+		/*while(pilot.isMoving() && !suppressed)
+		{   
+		    Thread.yield();
+
+		}*/
+			float backwards;
+			backwards = rfa.getRange();
+			headMotor.rotate(-180);
+			if(backwards > 50) {
+				System.out.println("der er plads bagved");
+			}
+			/*while(pilot.isMoving() && !suppressed)
+			{   
+			    Thread.yield();
+
+			}*/
+		} else if 
+			( left > right)
+			{
+				System.out.println("go left");
+				suppress();
+			}
+			else {
+				System.out.println("go right");
+				suppress();
+			}
+		 
 		}
 		
+		
 	
-	}
+	
 
 	@Override
 	public void suppress() {
