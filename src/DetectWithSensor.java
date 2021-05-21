@@ -17,6 +17,10 @@ public class DetectWithSensor  implements Behavior {
 	private boolean suppressed = false;
 	private double min = 45;
 	private double max = 315;
+	private int TURN_LEFT = 90;
+	private int TURN_RIGHT = -90;
+	private int TURN_BACK = 180;
+	
 	
 	public DetectWithSensor(socket_singleton _socket, DifferentialPilot _pilot, RangeFinderAdapter _rfa,  RangeFinderAdapter _rfaBack, EV3MediumRegulatedMotor _headmotor) {
 		pilot = _pilot;
@@ -48,48 +52,50 @@ public class DetectWithSensor  implements Behavior {
 		float back;
 		System.out.println("vi er i detect");
 		Sound.beepSequence();
-			//look around 
+			
+		//look with back sensor
 		back = rfaBack.getRange();
 		if(back > 20)
 		{pilot.travel(-15);}
 		headMotor.setAcceleration(100);
 		headMotor.setSpeed(100);
+		
+		// look Left
 		headMotor.rotate(-90);
-
 		left = rfa.getRange();
+		
+		// look Right
 		headMotor.rotate(180);
-
 		right = rfa.getRange();
+		
+		//look forward
 		headMotor.rotate(-90);
 
-		
+		// find where there is most space
 		float max  = Math.max(back, Math.max(right, left));
-		
-			
-		if (left < 50 && right < 50 )
+		if (max > 36) {
+		if (max == back)
 		{
-
-			float backwards;
-			backwards = rfaBack.getRange();
-			if(backwards > 35) {
-				sendInfo("der er plads bag ved");
-				System.out.println("der er plads bagved");
+				sendInfo("mest plads bagved, vender mig om");
+				pilot.rotate(180);
 				suppress();
-			}
 
 		} else if 
-			( left > right)
+			( max == left )
 			{
-			    sendInfo("go left");
-				System.out.println("go left");
+			    sendInfo("mest plads til venstre, rotere til venstre");
+				pilot.rotate(-90);
 				suppress();
 			}
 			else {
-				sendInfo("go right");
-				System.out.println("go right");
+				sendInfo("mest plads til højre, rotere til højre");
+				pilot.rotate(-90);
 				suppress();
 			}
-		 
+		}
+		else {
+			sendInfo("vi er fucked");
+		}
 		}
 		
 		

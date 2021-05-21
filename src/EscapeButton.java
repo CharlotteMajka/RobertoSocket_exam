@@ -1,3 +1,4 @@
+import lejos.hardware.Brick;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
@@ -23,8 +24,8 @@ public class EscapeButton implements Behavior {
 	public void action() {
 		suppressed = false;
 		Sound.twoBeeps();
-		System.exit(0);
 		
+		System.exit(0);
 	}
 
 	@Override

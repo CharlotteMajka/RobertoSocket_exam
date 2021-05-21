@@ -15,6 +15,11 @@ public class RemoteControl implements Behavior {
 	private boolean suppressed = false;
 	private boolean done = false;
 	private int SLOWDOWN = 25;
+	private int ACCELERATIONDOWN = 30;
+	private int SPEEDUP = 50;
+	private int ACCELERATIONUP = 75;
+	private int SPEED;
+	private int ACCELERATION;
 	private int NEAR_SOMETHING = 50;
 	
 	public RemoteControl(DifferentialPilot _pilot, socket_singleton _socket, RangeFinderAdapter _rfa) {
@@ -24,8 +29,8 @@ public class RemoteControl implements Behavior {
 	}
 	
 	public void doCommands() throws Exception  {	
-		pilot.setLinearAcceleration(75);
-		pilot.setLinearSpeed(50);
+		pilot.setLinearAcceleration(ACCELERATION);
+		pilot.setLinearSpeed(SPEED);
 
 		String command = socket.dataIn.readUTF();
 		System.out.println(command);
@@ -58,8 +63,17 @@ public class RemoteControl implements Behavior {
 		
 		if ( rfa.getRange() <= NEAR_SOMETHING )
 		{System.out.println("slow down");
-			pilot.setLinearSpeed(SLOWDOWN);
-			pilot.setLinearAcceleration(SLOWDOWN);
+			SPEED = SLOWDOWN;
+			ACCELERATION = ACCELERATIONDOWN;
+		}
+		
+	}
+	public void speedUp() {
+		
+		if ( rfa.getRange() > NEAR_SOMETHING )
+		{System.out.println("Speed up");
+			SPEED = SPEEDUP;
+			ACCELERATION = ACCELERATIONUP;
 		}
 		
 	}
@@ -75,8 +89,10 @@ public class RemoteControl implements Behavior {
 		
 		while(!suppressed)
 			try {
-				doCommands();
 				slowDown();
+				speedUp();
+				doCommands();
+				
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
