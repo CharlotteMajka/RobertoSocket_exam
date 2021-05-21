@@ -1,5 +1,7 @@
 import java.io.IOException;
 
+import javax.swing.JOptionPane;
+
 import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.MovePilot;
@@ -82,6 +84,8 @@ public class RemoteControl implements Behavior {
 		
 	}
 
+	
+	
 	@Override
 	public void suppress() {
 

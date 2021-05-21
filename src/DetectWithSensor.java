@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -11,15 +13,17 @@ public class DetectWithSensor  implements Behavior {
 	private RangeFinderAdapter rfa;
 	private RangeFinderAdapter rfaBack;
 	private EV3MediumRegulatedMotor headMotor;
+	private socket_singleton socket;
 	private boolean suppressed = false;
 	private double min = 45;
 	private double max = 315;
 	
-	public DetectWithSensor(DifferentialPilot _pilot, RangeFinderAdapter _rfa,  RangeFinderAdapter _rfaBack, EV3MediumRegulatedMotor _headmotor) {
+	public DetectWithSensor(socket_singleton _socket, DifferentialPilot _pilot, RangeFinderAdapter _rfa,  RangeFinderAdapter _rfaBack, EV3MediumRegulatedMotor _headmotor) {
 		pilot = _pilot;
 		rfa = _rfa;
 		rfaBack = _rfaBack;
 		headMotor = _headmotor;
+		socket = _socket;
 	}
 	
 	
@@ -51,45 +55,37 @@ public class DetectWithSensor  implements Behavior {
 		headMotor.setAcceleration(100);
 		headMotor.setSpeed(100);
 		headMotor.rotate(-90);
-		/*while(pilot.isMoving() && !suppressed)
-		{   
-		    Thread.yield();
 
-		}*/
 		left = rfa.getRange();
 		headMotor.rotate(180);
-		/*while(pilot.isMoving() && !suppressed)
-		{   
-		    Thread.yield();
-		}*/
+
 		right = rfa.getRange();
 		headMotor.rotate(-90);
-		/*while(pilot.isMoving() && !suppressed)
-			Thread.yield();*/
+
+		
+		float max  = Math.max(back, Math.max(right, left));
+		
+			
 		if (left < 50 && right < 50 )
 		{
-		/*while(pilot.isMoving() && !suppressed)
-		{   
-		    Thread.yield();
 
-		}*/
 			float backwards;
 			backwards = rfaBack.getRange();
-			if(backwards > 50) {
+			if(backwards > 35) {
+				sendInfo("der er plads bag ved");
 				System.out.println("der er plads bagved");
+				suppress();
 			}
-			/*while(pilot.isMoving() && !suppressed)
-			{   
-			    Thread.yield();
 
-			}*/
 		} else if 
 			( left > right)
 			{
+			    sendInfo("go left");
 				System.out.println("go left");
 				suppress();
 			}
 			else {
+				sendInfo("go right");
 				System.out.println("go right");
 				suppress();
 			}
@@ -97,7 +93,15 @@ public class DetectWithSensor  implements Behavior {
 		}
 		
 		
-	
+	private void sendInfo(String info) {
+		try {
+			socket.dataOut.writeUTF(info);
+			socket.dataOut.flush();
+		} catch (IOException ex) {
+			System.out.println(ex.getMessage());
+		}
+	}
+
 	
 
 	@Override

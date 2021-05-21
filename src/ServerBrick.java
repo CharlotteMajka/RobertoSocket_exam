@@ -48,7 +48,7 @@ public class ServerBrick {
 			
 			Behavior b1 = new RemoteControl(pilot, socket, rfa);
 			Behavior b3 = new EscapeButton();
-			Behavior b2 = new DetectWithSensor(pilot, rfa, rfaBack, headMotor);
+			Behavior b2 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
 			Behavior [] bArray = {b1, b2, b3};
 			Arbitrator arbi = new Arbitrator(bArray);
 			arbi.go();
