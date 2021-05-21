@@ -10,7 +10,13 @@ public class EscapeButton implements Behavior {
 	
 	@Override
 	public boolean takeControl() {
-		return Button.ESCAPE.isDown();
+		boolean takecon = false;
+		if(Button.ESCAPE.isDown())
+			takecon = true;
+			suppressed = false;
+		
+		return takecon;
+
 	}
 
 	@Override

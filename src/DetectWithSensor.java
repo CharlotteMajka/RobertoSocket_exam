@@ -9,14 +9,16 @@ public class DetectWithSensor  implements Behavior {
 	private DifferentialPilot pilot;
 	private EV3UltrasonicSensor USensor;
 	private RangeFinderAdapter rfa;
+	private RangeFinderAdapter rfaBack;
 	private EV3MediumRegulatedMotor headMotor;
 	private boolean suppressed = false;
 	private double min = 45;
 	private double max = 315;
 	
-	public DetectWithSensor(DifferentialPilot _pilot, RangeFinderAdapter _rfa, EV3MediumRegulatedMotor _headmotor) {
+	public DetectWithSensor(DifferentialPilot _pilot, RangeFinderAdapter _rfa,  RangeFinderAdapter _rfaBack, EV3MediumRegulatedMotor _headmotor) {
 		pilot = _pilot;
 		rfa = _rfa;
+		rfaBack = _rfaBack;
 		headMotor = _headmotor;
 	}
 	
@@ -39,10 +41,13 @@ public class DetectWithSensor  implements Behavior {
 		suppressed = false;
 		float left;
 		float right;
+		float back;
 		System.out.println("vi er i detect");
 		Sound.beepSequence();
 			//look around 
-		pilot.travel(-7);
+		back = rfaBack.getRange();
+		if(back > 20)
+		{pilot.travel(-15);}
 		headMotor.setAcceleration(100);
 		headMotor.setSpeed(100);
 		headMotor.rotate(-90);
@@ -62,15 +67,14 @@ public class DetectWithSensor  implements Behavior {
 		/*while(pilot.isMoving() && !suppressed)
 			Thread.yield();*/
 		if (left < 50 && right < 50 )
-		{headMotor.rotate(180);
+		{
 		/*while(pilot.isMoving() && !suppressed)
 		{   
 		    Thread.yield();
 
 		}*/
 			float backwards;
-			backwards = rfa.getRange();
-			headMotor.rotate(-180);
+			backwards = rfaBack.getRange();
 			if(backwards > 50) {
 				System.out.println("der er plads bagved");
 			}
