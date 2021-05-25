@@ -1,8 +1,10 @@
 import lejos.hardware.Brick;
 import lejos.hardware.BrickFinder;
+import lejos.hardware.Power;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
+
 import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
@@ -19,6 +21,7 @@ public class ServerBrick {
 	public static void main(String[] args) {
 		System.out.println("Waiting for client");
 		Brick brick = BrickFinder.getDefault();
+		Power battery = brick.getPower();
 		try 
 		(/*ServerSocket ss = new ServerSocket(5000);
 		 Socket s = ss.accept();
@@ -32,7 +35,7 @@ public class ServerBrick {
 		 EV3UltrasonicSensor Usensor = new EV3UltrasonicSensor(brick.getPort("S2"));
 		 EV3UltrasonicSensor UsensorBack = new EV3UltrasonicSensor(brick.getPort("S3"));
 		 EV3MediumRegulatedMotor headMotor = new EV3MediumRegulatedMotor(brick.getPort("A"));
-			
+
 		)
 		{
 			System.out.println("Client connected ");
@@ -47,9 +50,10 @@ public class ServerBrick {
 			DifferentialPilot pilot = new DifferentialPilot(WHEEL_DIAMETER, TRACK_WIDTH, left, right);
 			
 			Behavior b1 = new RemoteControl(pilot, socket, rfa);
-			Behavior b3 = new EscapeButton();
-			Behavior b2 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
-			Behavior [] bArray = {b1, b2, b3};
+			Behavior b2 = new BatteryLevel(socket, battery);
+			Behavior b3 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
+			Behavior b4 = new EscapeButton();
+			Behavior [] bArray = {b1, b2, b3, b4};
 			Arbitrator arbi = new Arbitrator(bArray);
 			arbi.go();
 				
