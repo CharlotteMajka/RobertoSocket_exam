@@ -7,7 +7,7 @@ import lejos.robotics.RangeFinderAdapter;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
 
-public class DetectWithSensor  implements Behavior {
+public class DetectWithSensor implements Behavior {
 	private DifferentialPilot pilot;
 	private EV3UltrasonicSensor USensor;
 	private RangeFinderAdapter rfa;
