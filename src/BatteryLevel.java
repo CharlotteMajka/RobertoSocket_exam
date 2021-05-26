@@ -42,8 +42,7 @@ public class BatteryLevel implements Behavior {
 
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
-		
+		suppress();
 	}
 
 	
