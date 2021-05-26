@@ -94,7 +94,7 @@ public class RemoteControl implements Behavior {
 				doCommands();
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
+			
 				e.printStackTrace();
 			}
 		

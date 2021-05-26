@@ -32,7 +32,8 @@ public class ServerBrick {
 		 EV3UltrasonicSensor Usensor = new EV3UltrasonicSensor(brick.getPort("S2"));
 		 EV3UltrasonicSensor UsensorBack = new EV3UltrasonicSensor(brick.getPort("S3"));
 		 EV3MediumRegulatedMotor headMotor = new EV3MediumRegulatedMotor(brick.getPort("A"));
-			
+		
+				
 		)
 		{
 			System.out.println("Client connected ");
@@ -47,8 +48,8 @@ public class ServerBrick {
 			DifferentialPilot pilot = new DifferentialPilot(WHEEL_DIAMETER, TRACK_WIDTH, left, right);
 			
 			Behavior b1 = new RemoteControl(pilot, socket, rfa);
-			Behavior b3 = new EscapeButton();
 			Behavior b2 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
+			Behavior b3 = new EscapeButton(socket);
 			Behavior [] bArray = {b1, b2, b3};
 			Arbitrator arbi = new Arbitrator(bArray);
 			arbi.go();

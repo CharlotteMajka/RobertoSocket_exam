@@ -17,8 +17,8 @@ public class DetectWithSensor  implements Behavior {
 	private boolean suppressed = false;
 	private double min = 45;
 	private double max = 315;
-	private int TURN_LEFT = 90;
-	private int TURN_RIGHT = -90;
+	private int TURN_LEFT = -90;
+	private int TURN_RIGHT = 90;
 	private int TURN_BACK = 180;
 	
 	
@@ -50,7 +50,7 @@ public class DetectWithSensor  implements Behavior {
 		float left;
 		float right;
 		float back;
-		System.out.println("vi er i detect");
+		sendInfo("forhindring forud, finder ud af hvad jeg kan gøre");
 		Sound.beepSequence();
 			
 		//look with back sensor
@@ -61,35 +61,37 @@ public class DetectWithSensor  implements Behavior {
 		headMotor.setSpeed(100);
 		
 		// look Left
-		headMotor.rotate(-90);
+		turnHead(TURN_LEFT);
 		left = rfa.getRange();
+		turnHead(0);
 		
 		// look Right
-		headMotor.rotate(180);
+		turnHead(TURN_RIGHT);
 		right = rfa.getRange();
-		
+		turnHead(0);
 		//look forward
-		headMotor.rotate(-90);
 
+
+		
 		// find where there is most space
 		float max  = Math.max(back, Math.max(right, left));
-		if (max > 36) {
+		if (max > 39) {
 		if (max == back)
 		{
 				sendInfo("mest plads bagved, vender mig om");
-				pilot.rotate(180);
+				pilot.rotate(TURN_BACK);
 				suppress();
 
 		} else if 
 			( max == left )
 			{
 			    sendInfo("mest plads til venstre, rotere til venstre");
-				pilot.rotate(-90);
+				pilot.rotate(TURN_LEFT);
 				suppress();
 			}
-			else {
+			else if (max == right) {
 				sendInfo("mest plads til højre, rotere til højre");
-				pilot.rotate(-90);
+				pilot.rotate(TURN_RIGHT);
 				suppress();
 			}
 		}
@@ -108,8 +110,15 @@ public class DetectWithSensor  implements Behavior {
 		}
 	}
 
+	public void turnHead(int angle) {
+		headMotor.rotateTo(angle, true);
+		while(headMotor.isMoving() && !suppressed)
+			Thread.yield();
+		if(suppressed)
+			{headMotor.rotateTo(0, true);
+		return;}
+	}
 	
-
 	@Override
 	public void suppress() {
 		suppressed = true;
