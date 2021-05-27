@@ -127,6 +127,7 @@ public class RemoteControl implements Behavior {
 		
 		while(!suppressed)
 			try {
+				batteryLevel();
 				slowDown();
 				speedUp();
 				doCommands();
