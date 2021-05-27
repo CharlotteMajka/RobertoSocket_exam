@@ -49,11 +49,10 @@ public class ServerBrick {
 			RangeFinderAdapter rfaBack = new RangeFinderAdapter(UsensorBack.getDistanceMode());
 			DifferentialPilot pilot = new DifferentialPilot(WHEEL_DIAMETER, TRACK_WIDTH, left, right);
 			
-			Behavior b1 = new RemoteControl(pilot, socket, rfa);
-			Behavior b2 = new BatteryLevel(socket, battery);
-			Behavior b3 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
-			Behavior b4 = new EscapeButton();
-			Behavior [] bArray = {b1, b2, b3, b4};
+			Behavior b1 = new RemoteControl(pilot, socket, rfa, battery);
+			Behavior b2 = new DetectWithSensor(socket, pilot, rfa, rfaBack, headMotor);
+			Behavior b3 = new EscapeButton();
+			Behavior [] bArray = {b1, b2, b3};
 			Arbitrator arbi = new Arbitrator(bArray);
 			arbi.go();
 				

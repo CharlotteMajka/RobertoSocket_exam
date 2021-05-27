@@ -42,7 +42,7 @@ public class BatteryLevel implements Behavior {
 
 	@Override
 	public void action() {
-		suppress();
+
 	}
 
 	
