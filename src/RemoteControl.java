@@ -15,8 +15,7 @@ public class RemoteControl implements Behavior {
 	private Power battery;
 	
 	private float battery_needcharge = (float) 6.8;
-	private float battery_low = (float) 7.2;
-	private float battery_okay = (float) 7.8;
+	private float battery_low = (float) 7.5;
 	private float battery_full = (float) 8.5;
 	
 	private boolean suppressed = false;
@@ -90,21 +89,21 @@ public class RemoteControl implements Behavior {
 		float batterylevel = battery.getVoltage();
 		if (batterylevel <= battery_needcharge)
 		{
-			sendInfo("Batteri niveau: ▯▯▯ - Oplad nu!");
+			sendInfo("Batteri niveau: ▯▯▯ - Oplad nu! " + batterylevel);
 		}
-		if (batterylevel <= battery_low)
+		if (batterylevel > battery_needcharge && batterylevel <= battery_low)
 		{
-			sendInfo("Batteri niveau: ▮▯▯");
+			sendInfo("Batteri niveau: ▮▯▯ " + batterylevel);
 		}
-		if (batterylevel >= battery_okay)
+		if (batterylevel > battery_low && batterylevel <= battery_full)
 		{
-			sendInfo("Batteri niveau: ▮▮▯");
+			sendInfo("Batteri niveau: ▮▮▯ "  + batterylevel);
 		}
 		if (batterylevel >= battery_full)
 		{
-			sendInfo("Batteri niveau: ▮▮▮");
+			sendInfo("Batteri niveau: ▮▮▮ "  + batterylevel);
 		}
-		sendInfo("Batteri info sendt!");
+		//sendInfo("Batteri info sendt!" + batterylevel);
 	}
 	
 	private void sendInfo(String level) {
