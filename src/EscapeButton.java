@@ -8,9 +8,9 @@ import lejos.hardware.Sound;
 import lejos.robotics.subsumption.Behavior;
 
 public class EscapeButton implements Behavior {
-	 private boolean suppressed = false;
+	 public boolean suppressed = false;
 	 private socket_singleton socket;
-	 private  boolean Takecontrol = false;
+	 public  boolean Takecontrol = false;
 	 
 	public EscapeButton(socket_singleton _socket) {
 		socket = _socket;
@@ -21,6 +21,7 @@ public class EscapeButton implements Behavior {
 			@Override
 			public void keyReleased(Key k) {
 			Takecontrol=true;
+			action();
 			}
 			
 			@Override
@@ -34,7 +35,8 @@ public class EscapeButton implements Behavior {
 	@Override
 	public boolean takeControl() {
 		if(Takecontrol == true)
-			return Takecontrol;
+			{suppressed = false;
+			return Takecontrol;}
 		else return false;
 		
 	}

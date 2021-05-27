@@ -103,7 +103,7 @@ public class RemoteControl implements Behavior {
 		{
 			sendInfo("Batteri niveau: ▮▮▮ "  + batterylevel);
 		}
-		//sendInfo("Batteri info sendt!" + batterylevel);
+
 	}
 	
 	private void sendInfo(String level) {
