@@ -104,6 +104,7 @@ public class RemoteControl implements Behavior {
 		{
 			sendInfo("Batteri niveau: ▮▮▮");
 		}
+		sendInfo("Batteri info sendt!");
 	}
 	
 	private void sendInfo(String level) {
